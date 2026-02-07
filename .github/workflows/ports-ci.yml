@@ -19,6 +19,7 @@ jobs:
           mem: 8192
           cpu: 4
           run: |
+            set -x
             echo ">>> FreeBSD VM is working"
             uname -a
 
