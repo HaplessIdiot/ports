@@ -1,0 +1,61 @@
+name: SonicDE Ports CI
+
+on:
+  push:
+  pull_request:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: FreeBSD 15 VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "15.0"
+          run: |
+            echo ">>> FreeBSD VM is working"
+            uname -a
+
+            echo ">>> Updating pkg"
+            pkg update -f
+
+            echo ">>> Installing build tools"
+            pkg install -y git pkgconf cmake ninja llvm17 pkg
+
+            echo ">>> Entering repo"
+            cd /work/ports
+
+            echo ">>> Finding all ports"
+            PORTS=$(find x11 -mindepth 1 -maxdepth 1 -type d)
+
+            echo ">>> Ports found:"
+            echo "$PORTS"
+
+            for p in $PORTS; do
+              echo ">>> Building port: $p"
+              cd "$p"
+
+              # Clean
+              make clean || true
+
+              # Build
+              make || exit 1
+
+              # Install into staging dir
+              STAGE=/tmp/stage
+              rm -rf $STAGE
+              make install DESTDIR=$STAGE || exit 1
+
+              # Package
+              mkdir -p /tmp/packages
+              pkg create -r $STAGE -m ./pkg -o /tmp/packages || exit 1
+
+              cd /work/ports
+            done
+
+            echo ">>> All ports built successfully"
+            exit 0
