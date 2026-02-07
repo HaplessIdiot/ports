@@ -1,4 +1,4 @@
-name: SonicDE Ports CI (FreeBSD 15 + GhostBSD Repo)
+name: GhostBSD Ports CI (FreeBSD 15 + GhostBSD Repo)
 
 on:
   push:
