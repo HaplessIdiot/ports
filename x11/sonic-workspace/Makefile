@@ -2,7 +2,7 @@ PORTNAME=   sonic-workspace
 DISTVERSION=    6.5.5
 CATEGORIES= x11 kde
 
-MAINTAINER= you@example.com
+MAINTAINER= haplessidiot
 COMMENT=    Sonic Desktop workspace environment (KDE6-based)
 WWW=        https://github.com/Sonic-DE/sonic-workspace
 
@@ -39,4 +39,5 @@ post-patch:
     @${REINPLACE_CMD} -e 's|/usr/share|${PREFIX}/share|g' \
         ${WRKSRC}/src/*/*
 
-.include <bsd.port.mk>
+PORTSDIR?= ${.CURDIR}/../..
+.include "${PORTSDIR}/Mk/bsd.port.mk"
