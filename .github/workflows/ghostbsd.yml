@@ -26,8 +26,10 @@ jobs:
             echo ">>> Installing build tools"
             pkg install -y git pkgconf cmake ninja llvm17
 
-            echo ">>> Entering workspace"
-            cd /github/workspace
+            echo ">>> Entering repo"
+            cd /home/runner/work/ports/ports
+            pwd
+            ls -R .
 
             echo ">>> Finding all ports"
             PORTS=$(find . -mindepth 2 -maxdepth 2 -type f -name Makefile -print0 | xargs -0 -n1 dirname)
@@ -43,7 +45,7 @@ jobs:
               make stage || exit 1
               make check-plist || exit 1
               make package || exit 1
-              cd /github/workspace
+              cd /home/runner/work/ports/ports
             done
 
             echo ">>> All ports built successfully"
