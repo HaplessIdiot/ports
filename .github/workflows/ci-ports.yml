@@ -1,0 +1,53 @@
+name: FreeBSD Ports CI
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+      - master
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up FreeBSD VM
+        uses: vmactions/freebsd-vm@v1
+        with:
+          release: "14.1"
+          mem: 4096
+          cpu: 4
+          prepare: |
+            pkg install -y git pkgconf cmake ninja qt6-base qt6-tools \
+              kde6-frameworks kde6-plasma wayland xorg-minimal \
+              llvm17 pkgconf
+
+          run: |
+            echo ">>> Entering FreeBSD VM"
+            cd /github/workspace
+
+            # Detect changed ports
+            PORTS=$(git diff --name-only HEAD~1 | grep '/' | cut -d/ -f1-2 | sort -u)
+
+            if [ -z "$PORTS" ]; then
+              echo "No ports changed"
+              exit 0
+            fi
+
+            for p in $PORTS; do
+              echo ">>> Building port: $p"
+              cd "$p"
+
+              # Standard FreeBSD ports build sequence
+              make makesum
+              make clean
+              make stage
+              make check-plist
+              make package
+
+              cd /github/workspace
+            done
