@@ -10,7 +10,7 @@ LICENSE=    GPLv2
 LICENSE_FILE=   ${WRKSRC}/COPYING
 
 USES=       cmake compiler:c++17-lang kde:6 qt:6 pkgconfig \
-        gl xorg wayland tar:xz
+        gl xlibre tar:xz
 USE_GL=     gl egl
 USE_XORG=   x11 xcb xext xfixes xtst xrender xcursor xi sm
 USE_KDE=    auth bookmarks codecs completion config \
@@ -23,7 +23,6 @@ USE_KDE=    auth bookmarks codecs completion config \
         kirigami2 runner doctools newstuff declarative
 USE_QT=     base declarative quick quickcontrols2 \
         tools svg sensors multimedia \
-        waylandcompat \
         buildtools:build qmake:build
 
 USE_GITHUB= yes
