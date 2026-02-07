@@ -26,6 +26,9 @@ jobs:
             echo ">>> Installing build tools"
             pkg install -y git pkgconf cmake ninja llvm17
 
+            echo ">>> Installing FreeBSD ports tree"
+            git clone https://git.freebsd.org/ports.git /usr/ports
+
             echo ">>> Entering repo"
             cd /work/ports
             pwd
